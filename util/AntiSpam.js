@@ -5,8 +5,8 @@ const slowModeMentionsMap = new Map();
 const slowModeMap = new Map();
 
 const spamLevel = {
-    'warn': 7,
-    'mute': 10
+    'warn': 10,
+    'mute': 12
 };
 
 module.exports = (message) => {
@@ -16,10 +16,6 @@ module.exports = (message) => {
         || !message.guild.member(client.user).hasPermission("BAN_MEMBERS")
         || message.member.hasPermission("MANAGE_MESSAGES")
       )
-        return;
-
-    // Ignore if 1 mention and it's a bot (bot interaction)
-    if( message.mentions.users.size == 1 && message.mentions.users.first().bot )
         return;
 
     // If there is no trace of the author in the slowmode map, add them.
