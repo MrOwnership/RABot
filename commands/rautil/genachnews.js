@@ -72,15 +72,14 @@ module.exports = class GenerateAchievementNewsCommand extends Command {
       const [year, month, day] = json.Released.split('-').map(Number);
       const date = new Date(year, month - 1, day);
       let releaseDate = null;
-      switch (json.ReleasedAtGranularity)
-      {
-        case "day":
+      switch (json.ReleasedAtGranularity) {
+        case 'day':
           releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${day}, ${year}`;
           break;
-        case "month":
+        case 'month':
           releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${year}`;
           break;
-        case "year":
+        case 'year':
           releaseDate = `${year}`;
           break;
         default:
