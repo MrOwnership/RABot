@@ -68,13 +68,32 @@ module.exports = class GenerateAchievementNewsCommand extends Command {
         return date1 >= date2 ? d1 : d2;
       });
 
+      // Convert date to a human readable string based on the granularity
+      const [year, month, day] = json.Released.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      let releaseDate = null;
+      switch (json.ReleasedAtGranularity)
+      {
+        case "day":
+          releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${day}, ${year}`;
+        break;
+        case "month":
+          releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${year}`;
+        break;
+        case "year":
+          releaseDate = `${year}`;
+        break;
+        default:
+          releaseDate = json.Released;
+      }
+
       gameInfo = {
         id: gameId,
         title: json.Title,
         consoleName: json.ConsoleName,
         genre: json.Genre,
         developer: json.Developer,
-        releaseDate: json.Released,
+        releaseDate,
         achievementSetDate,
       };
     } catch (error) {
@@ -96,7 +115,7 @@ module.exports = class GenerateAchievementNewsCommand extends Command {
 
     const gameInfo = await this.getGameInfo(id);
     if (!gameInfo) {
-      return sentMsg.edit(`Unable to get info from the game ID \`${id}\`... :frowning:`);
+      return sentMsg.edit(`Unable to get info from the game ID \`${id}\`... :frowning:. This command only works if the set has published achievements.`);
     }
 
     const youtubeLink = await this.getLongplayLink(
@@ -104,10 +123,13 @@ module.exports = class GenerateAchievementNewsCommand extends Command {
     );
 
     const template = `
-\\\`\\\`\\\`md
-\`\`\`md
-< ${gameInfo.title} >
-[${gameInfo.consoleName}, ${gameInfo.genre}](${gameInfo.developer})< ${gameInfo.releaseDate} >
+\\\`\\\`\\\`ansi
+\`\`\`ansi
+Title:       [1;31m${gameInfo.title}[0m
+Console:     [0;34m${gameInfo.consoleName}[0m
+Developer:   [0;32m${gameInfo.developer}[0m
+Genre:       [0;35m${gameInfo.genre}[0m
+Released:    [0;33m${gameInfo.releaseDate}[0m
 \`\`\`\\\`\\\`\\\`
 A new set was published by @{AUTHOR_NAME} on ${gameInfo.achievementSetDate}
 ${youtubeLink || '{LONGPLAY-LINK}'}
