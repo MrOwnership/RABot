@@ -69,21 +69,24 @@ module.exports = class GenerateAchievementNewsCommand extends Command {
       });
 
       // Convert date to a human readable string based on the granularity
-      const [year, month, day] = json.Released.split('-').map(Number);
-      const date = new Date(year, month - 1, day);
-      let releaseDate = null;
-      switch (json.ReleasedAtGranularity) {
-        case 'day':
-          releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${day}, ${year}`;
-          break;
-        case 'month':
-          releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${year}`;
-          break;
-        case 'year':
-          releaseDate = `${year}`;
-          break;
-        default:
-          releaseDate = json.Released;
+      let releaseDate = '';
+      if (json.Released !== null) {
+          const [year, month, day] = json.Released.split('-').map(Number);
+          const date = new Date(year, month - 1, day);
+
+          switch (json.ReleasedAtGranularity) {
+            case 'day':
+              releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${day}, ${year}`;
+              break;
+            case 'month':
+              releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${year}`;
+              break;
+            case 'year':
+              releaseDate = `${year}`;
+              break;
+            default:
+              releaseDate = json.Released;
+          }
       }
 
       gameInfo = {
