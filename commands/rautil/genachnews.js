@@ -76,13 +76,13 @@ module.exports = class GenerateAchievementNewsCommand extends Command {
       {
         case "day":
           releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${day}, ${year}`;
-        break;
+          break;
         case "month":
           releaseDate = `${date.toLocaleString('en-us', { month: 'long' })} ${year}`;
-        break;
+          break;
         case "year":
           releaseDate = `${year}`;
-        break;
+          break;
         default:
           releaseDate = json.Released;
       }
